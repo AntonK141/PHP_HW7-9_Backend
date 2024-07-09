@@ -14,19 +14,22 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $sql = "SELECT * FROM categories";
+    $category_id = isset($_GET['category_id']) ? $_GET['category_id'] : die("Category ID not provided.");
+
+    $sql = "SELECT * FROM products WHERE category_id = $category_id";
     $result = $conn->query($sql);
 
-    $categories = array();
+    $products = array();
     while ($row = $result->fetch_assoc()) {
-        $categories[] = $row;
+        $products[] = $row;
     }
 
-    echo json_encode($categories);
+    echo json_encode($products);
 }
 
 $conn->close();
 ?>
+
 
 
 

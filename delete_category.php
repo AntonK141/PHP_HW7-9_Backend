@@ -14,31 +14,27 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
-    parse_str(file_get_contents("php://input"), $data);
-    $id = $data['id'];
+    parse_str(file_get_contents("php://input"), $_DELETE);
+    $id = isset($_DELETE['id']) ? $_DELETE['id'] : die("Category ID not provided.");
 
     $sql = "SELECT photo FROM categories WHERE id = $id";
     $result = $conn->query($sql);
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $photo_path = $row['photo'];
+    $photo_path = $result->fetch_assoc()['photo'];
 
-        $sql = "DELETE FROM categories WHERE id = $id";
-        if ($conn->query($sql) === TRUE) {
-            if (file_exists($photo_path)) {
-                unlink($photo_path);
-            }
-            echo "Category deleted successfully";
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
+    $sql = "DELETE FROM categories WHERE id = $id";
+    if ($conn->query($sql) === TRUE) {
+        if (file_exists($photo_path)) {
+            unlink($photo_path);
         }
+        echo "Category deleted successfully";
     } else {
-        echo "Error: Category not found.";
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
 }
 
 $conn->close();
 ?>
+
 
 
 

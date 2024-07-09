@@ -15,11 +15,14 @@ if ($conn->connect_error) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
+    $description = $_POST['description'];
+    $price = $_POST['price'];
+    $category_id = $_POST['category_id'];
     $photo = $_FILES['photo'];
 
     $target_dir = "uploads/";
     $file_extension = pathinfo($photo["name"], PATHINFO_EXTENSION);
-    $unique_file_name = uniqid('category_photo_', true) . '.' . $file_extension;
+    $unique_file_name = uniqid('product_photo_', true) . '.' . $file_extension;
     $target_file = $target_dir . $unique_file_name;
 
     $allowed_file_types = ['jpg', 'jpeg', 'png', 'gif'];
@@ -32,9 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (move_uploaded_file($photo["tmp_name"], $target_file)) {
-        $sql = "INSERT INTO categories (name, photo) VALUES ('$name', '$target_file')";
+        $sql = "INSERT INTO products (name, description, price, photo, category_id) VALUES ('$name', '$description', '$price', '$target_file', '$category_id')";
         if ($conn->query($sql) === TRUE) {
-            echo "New category added successfully";
+            echo "Product added successfully";
         } else {
             echo "Error: " . $sql . "<br>" . $conn->error;
         }
@@ -45,6 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $conn->close();
 ?>
+
+
+
+
+
 
 
 
